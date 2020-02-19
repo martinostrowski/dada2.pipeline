@@ -1,0 +1,63 @@
+Pipeline used during Brown et al 2018 published analysis of the BPA dataset:
+“DNA sequence processing
+To allow for the highest possible phylogenetic resolution, data are provided as single nucleotide variants. Sequences are analyzed in a strictly standardized fashion alongside other Australian microbial biodiversity initiatives including the Biomes of Australian Soils (BASE) project17 enabling direct comparison and integration.
+For each amplicon, each plate of illumina data is submitted to the following workflow separately, to identify correct biological sequences and build sample-by-read abundance matrices for samples on that plate18.
+1. Illumina R1 and R2 reads are merged using FLASH.
+2. FASTA format sequences are extracted from FASTQ files and those<400 base pairs (bp) in length (or<350 bp for the 18 S amplicon) or containing N's or homopolymer runs of>8 bp are removed using MOTHUR, (v1.34.1).
+3. Using the USEARCH 64 bit v10.0.240 package, sequences are de-replicated (-derep_fulllength command), ordered by abundance and sequences with<4 representatives removed (-sortbysize command)
+4. Chimeras are removed and biologically correct, zero-radius operational taxonomic units (zOTUs) identified (unoise3 command).
+5. All quality-filtered sequences (from (2)) are then mapped to chimera-free zOTUs and a sample by read abundance table created using (-usearch_global)
+6. Sample-by-read abundance matrices from each plate are merged based on the unique zOTU sequence, providing a sample-by-read abundance matrix for all samples in the dataset.
+7. A final sample-by-read abundance data matrix is created by discarding sequences that are either not identified or not identified correctly for the given assay at the kingdom and phylum level (note this does not remove chloroplasts or mitochondrion from the Bacteria assay).
+8. zOTUs are taxonomically classified with the SILVA v132 database using MOTHUR’s implementation of the Wang classifier and a 60% bayesian probability cut-off. Eukaryotic zOTUs are also taxonomically classified using the Protist Ribosomal Reference database (PR2).
+9. zOTUs can be readily clustered into OTUs of any similarity of the researchers choosing for comparison to other studies using a number of algorithms e.g. USEARCH cluster_fast.”
+
+
+Concerns regarding previous use of BPA dataset
+Primer removal?
+Merging was done without quality checking or trimming of low quality ends of R2 reads
+Will the communities identified using the new method be comparable to the old BPA processed communities?
+
+
+
+Pipeline used for processing unques dataset:
+https://github.com/martinostrowski/marinemicrobes/tree/master/uniques
+1. Illumina R1 and R2 reads are merged using FLASH. And supplied directly to Martin.
+2. The non-filtered data was supplied as a single 3 column file (seq, sampleid_plate, abund) for each site_plate combination (~107GB for the NRS data alone).
+3. pre-filtering involved removal of all sequences with < 3 abundance on a sequencing run as well as removal of all sequences containing N. n.b. some sequences displayed N at the terminal base, which could be trimmed and retained with modifications to the 'uniques' pipeline
+
+Pipeline used during our reanalysis of the BPA data:
+
+For the purposes of this project all unprocessed Eukaryotic 18s rRNA, Bacterial 16s rRNA, and Archaeal a16s rRNA paired end Illumina R1 and R2 reads were downloaded directly from the Bio Platforms Australia (BPA) Marine Microbes data portal on 5 February 2020 (https://data.bioplatforms.com/organization/australian-microbiome). Paired end R1 and R2 reads were processed using the Dada2 pipeline (1-10) followed by separate taxonomic assignment for the three data subsets: archaela a16s rRNA genes (11), bacterial 16s rRNA genes (12), and eukaryotic 18s rRNA genes (13).
+
+Paired end Illumina reads R1 and R2 reads were inspected for sequence quality
+Reads with ‘N’ bases were removed in filtN step of pipeline (done before primer removal to ensure short primers are removed effectively with cutadapt)
+Primers and adaptors were removed using cutadapt
+Archaea a16s rRNA
+F primer (A2F/Arch21f): 3’-TTCCGGTTGATCCYGCCGGA-5’
+R primer (519 R*): 3’-GWATTACCGCGGCKGCTG-5’
+Bacterial 16s rRNA
+F primer (27 F): 3’-AGAGTTTGATCMTGGCTCAG-5’
+R primer (519 R*): 3’-GWATTACCGCGGCKGCTG-5’
+Eukaryotic 18s rRNA
+F primer (TAReuk454FWD1): 3’-CCAGCASCYGCGGTAATTCC-5’
+R primer (TAReuk-Rev3): 3’-ACTTTCGTTCTTGATYRATGATCTRYATC-5’
+*same reverse primer used for Archaea and Bacteria reverse primer
+R1 and R2 were truncated to remove low quality terminal ends 
+Archaea a16s rRNA truncated at: trunc(R1= 250; R2= 228)
+Bacterial 16s rRNA truncated at: trunc(R1= 260; R2= 230)
+Eukaryotic 18s rRNA truncated at: trunc(R1= 250; R2= 228)
+R1 and R2 were also filtered based on DADA2 maxEE and truncQ
+Archaea a16s rRNA: 
+maxEE(R1= 2; R2= 6); truncQ(2) (*new method)
+maxEE(R1= 6; R2= 10); truncQ(2) (*old method)
+Bacterial 16s rRNA: maxEE(R1= 2; R2= 6); truncQ(6)
+Eukaryotic 18s rRNA: maxEE(R1= 2; R2= 6); truncQ(2)
+Used Dada2 to learn expected error rates
+Used Dada2 to dereplicate sequences
+Corresponding R1 and R2 were merged
+Chimeras were removed from the dataset
+Dada2 generated amplicon sequence variant (ASV) table
+Taxonomic classification for Archaea a16s rRNA ASVs done using a 50% probability cut-off  SILVA v132 and GTDB classifiers, GTDB was used preferentially as it resulted in a higher proportion of classified versus unclassified ASVs.
+Taxonomic classification for bacterial 16s rRNA ASVs done using a 50% probability cut-off  SILVA v132.
+Taxonomic classification for eukaryotic 18s rRNA ASVs done using a 50% probability cut-off Protist Ribosomal Reference database (PR2) (link to github pages with full annotated R Notebooks for annotation).
