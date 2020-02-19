@@ -1,0 +1,9 @@
+
+
+#Sequence variants, denoising and the large scale Microbiome Initiatives: How important is a single base pair for addressing fundamental questions in ecology?
+
+Large scale sequencing projects seek to describe the biodiversity of (micro)-organisms across a  broad range of environmental and host associated systems. They often involve the analyses of microbial populations sampled across a wide spectrum of different ecological niches, using different sampling procedures, with DNA extracted by different protocols and operators, and sequencing data combined across multiple sequencing runs, potentially produced by different sequencing centres, using different primers for marker gene surveys and different post-sequencing analyses pipelines - all of these factors can impact upon the reproducibility of the results and the interpretation of the data. In this study we directly compared the results of amplicon processing pipelines with the overarching aim of identifying potential biases or errors in the data products. To facilitate the comparison and interoperation with other sequencing initiative we  establish a set of open data processing workflows, and a set of analytical scripts for benchmarking the Australian Microbiome Amplicon data that are compatible with global observations
+
+As we strive towards a better grasp of the universal rules that underpin (microbial) ecology The interpretation of fundamental questions, such as ‘How many species are there?’ and ‘what processes contribute to the structure microbial communities?' may be significantly alterred by fasle variation introduced, or true variation removed during amplification, sequencing or as a result of dataprocessing decisions. 
+
+This repository outlines the DADA2 processing pipline implemented to re-analyse the marine amplicon sequencing runs carried out on Ekaryote 18S v4, Archaeal , and Bacterial 16S marker genes
