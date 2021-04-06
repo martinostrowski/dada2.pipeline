@@ -1,5 +1,6 @@
 
-# Sequence variants, denoising and the large scale Microbiome Initiative: A big data version of dada2 pipeline for processing high throughput amplicon data for marine ecology.
+# Sequence variants, denoising and the large scale Microbiome Initiative: 
+A big data version of dada2 pipeline for processing high throughput amplicon data for marine ecology.
 
 Single base pair accuracy is important for addressing fundamental questions in ecology
 
