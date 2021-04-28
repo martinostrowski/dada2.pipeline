@@ -1,7 +1,9 @@
 
-#Rscript for running on the HPC
+#Rscript for running on the UTS HPC
 #Example input" Rscript --verbose do-dada2ca.r 1 > output.ca.1.out"
-#input required 
+#setup section 
+
+args = commandArgs(trailingOnly=TRUE);
 library(R.utils);
 library(dada2);
 library(ShortRead); packageVersion("ShortRead") # dada2 depends on this
@@ -10,38 +12,34 @@ library(Biostrings);  # for creating the final graph at the end of the pipeline
 library(Hmisc); packageVersion("Hmisc") # for creating the final graph at the end of the pipeline
 #library(plotly); packageVersion("plotly") # enables creation of interactive graphs, especially helpful for quality plots
 
+#inputs section (edit primers and paths as appropriate
 setwd("/shared/c3/bio_db/BPA/a16s/");
 plates<-read_csv('A16SNRSplates.csv');
-plates;
-
-args = commandArgs(trailingOnly=TRUE);
-
+#primers
+FWD <- "TTCCGGTTGATCCYGCCGGA";  ## CHANGE ME to your forward primer sequence Archaea 16S: A2f/Arch21f Brown et al 
+REV <- "GWATTACCGCGGCKGCTG"; ## CHANGE ME...Bacteria/Archaea 16S: 519r
 
 p=args[1];
-print(p);
 #rerun for all unzipped plates
-#setwd("~/Users/annarizzibramucci/Downloads/australian-microbiome-2/B862T")
+#setwd("~/australian-microbiome-2/B862T")
 
 #unzip all downloaded files using MAC terminal and the following code: gunzip *.fastq.gz
 
 # Set path to shared data folder and contents
-#data.fp <- "~/Downloads/australian-microbiome-2/B862T"# CHANGE ME to the directory containing the fastq files after unzipping.
+#data.fp <- "~/australian-microbiome-2/B862T"# CHANGE ME to the directory containing the fastq files after unzipping.
 
 plates[p,1];
 data.fp.gz <- (paste("/shared/c3/bio_db/BPA/a16s/", plates[p,1], "/",sep=""));
+
+
 # List all files in shared folder to check path
-print(data.fp.gz);
 files.fp.gz<-list.files(data.fp.gz,  pattern="fastq.gz");
-list.files(data.fp.gz);
-print(files.fp.gz);
+
 
 for (i in seq_along (files.fp.gz)){
               gunzip(filename=paste(data.fp.gz,files.fp.gz[i],sep=""), overwrite=T)}
               
-data.fp <- (paste("/shared/c3/bio_db/BPA/a16s/", plates[p,1], "/", sep="")); 
-# List all files in shared folder to check path
-print(data.fp);
-list.files(data.fp);
+data.fp <- (paste("/shared/c3/bio_db/BPA/a16s/", plates[p,1], "/", sep=""));  
 
 # Forward and reverse fastq filenames have format: SAMPLENAME_R1_001.fastq and SAMPLENAME_R2_001.fastq
 fnFs <- sort(list.files(data.fp, pattern="_R1.fastq", full.names = TRUE));
@@ -66,10 +64,6 @@ fnFs <- sort(list.files(data.fp, pattern="L001_R1.fastq", full.names = TRUE));
 fnRs <- sort(list.files(data.fp, pattern="L001_R2.fastq", full.names = TRUE));
 # Extract sample names, assuming filenames have format: SAMPLENAME_XXX.fastq
 sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1);
-
-
-FWD <- "TTCCGGTTGATCCYGCCGGA";  ## CHANGE ME to your forward primer sequence Archaea 16S: A2f/Arch21f Brown et al 
-REV <- "GWATTACCGCGGCKGCTG"; ## CHANGE ME...Bacteria/Archaea 16S: 519r
 
 allOrients <- function(primer) {
     # Create all orientations of the input sequence
