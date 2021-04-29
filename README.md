@@ -17,8 +17,8 @@ We are constantly improving this pipeline and welcome feedback and discussion
 
 ## Requirements
 
-de-multiplexed paired-end fastq
-[DADA2 (1.18)](https://benjjneb.github.io/dada2/index.html)
+de-multiplexed paired-end fastq, 
+[DADA2 (1.18)](https://benjjneb.github.io/dada2/index.html), 
 [cutadapt](https://github.com/marcelm/cutadapt/) 
 
 
